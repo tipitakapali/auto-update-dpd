@@ -1,0 +1,108 @@
+name: Prepare DPD database
+
+on:
+  release:
+    types: [published]
+    # repo: digitalpalidictionary/digitalpalidictionary
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: It may take hours to complete
+        run: echo "It may take hours to complete, perhaps will ask dpd for full Goldendict build"
+          
+      - name: install chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyglossary bs4 webdriver-manager selenium lxml
+
+      - name: download & extract dpd-goldendict.zip
+        run: |
+          wget -O dpd-goldendict.zip https://github.com/digitalpalidictionary/digitalpalidictionary/releases/latest/download/dpd-goldendict.zip
+          unzip dpd-goldendict.zip -d tabfile
+
+      - name: convert to Tabfile
+        run: |
+          pyglossary tabfile/dpd/dpd.ifo tabfile/dpd/dpd.txt --read-format=Stardict --write-format=Tabfile
+          pyglossary tabfile/dpd-deconstructor/dpd-deconstructor.ifo tabfile/dpd-deconstructor/dpd-deconstructor.txt --read-format=Stardict --write-format=Tabfile
+
+      - name: List tabfile directory contents
+        run: |
+          ls -lh ${{ github.workspace }}/tabfile
+
+      - name: run HTTP Server Action for Js
+        uses: Eun/http-server-action@v1.0.11
+        with:
+          directory: ${{ github.workspace }}/tabfile
+          port: 8080
+
+      - name: Test Server Action
+        run: |
+          curl http://127.0.0.1:8080/dpd/res/main.js
+      
+      - name: Print CPU Info
+        run: lscpu
+
+      - name: Print Memory Info
+        run: free -h
+
+      - name: Print Disk Usage
+        run: df -h
+
+      - name: generate dpd, declension, conjugation db
+        run: python main_dpd_to_sqlite.py
+
+      - name: generate dpd deconstructor db
+        run: python dpd_deconstructor_to_sqlite.py
+
+      - name: Zip SQLite database
+        run: |
+          zip dpd-databases.zip *.db dpd_table_log.txt dpd_deconstructor_log.txt
+
+      - name: Zip SQLite database
+        run: |
+          echo "hello" > a.txt
+          zip dpd-databases.zip a.txt
+      
+      # - name: Upload artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: dpd-databases
+      #     path: |
+      #       dpd-databases.zip
+
+      - name: generate version tag
+        id: version
+        run: |
+          echo "VERSION=v$(date +'%y.%-m.%-d')" >> "$GITHUB_ENV"
+          echo "use tag name: v$(date +'%y.%-m.%-d')"
+    
+      - name: create Github release
+        uses: softprops/action-gh-release@v2
+        # if: startsWith(github.ref, 'refs/tags/')
+        with:
+          name: auto build dpd ${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}
+          draft: false
+          prerelease: false
+          make_latest: true
+          files: ./dpd-databases.zip
+      
+      - name: notify api server
+        run: |
+          curl -X POST https://api.tipitakapali.org/api/auto-update-db \
+          -H "Content-Type: application/json" \
+          -d '{"version": "${{ env.VERSION }}", "releaseUrl": "https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/dpd-databases.zip"}'
