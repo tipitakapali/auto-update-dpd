@@ -1,39 +1,30 @@
 # What does it do?
 
-- when dpd has a new release -> it will auto prepare the db release files for tipitakapali.org
+- When there is a new release of the Digital Pali Dictionary (DPD), it will automatically prepare tailored database files for tipitakapali.org. (How to monitor dpd new releases? (please google) then trigger the Action via webhook etc...)
 
-- will notify the API server to use the newly generated db files
+- It will notify the API server to use the newly generated database files via a curl POST (with a secret UPDATE-KEY)
 
-- it uses a very slow "selenium" way to restore the minified dpd-goldendict version (it may take ~2 hours)
-
+- It uses a very slow "selenium" way to restore the minified dpd-goldendict version. It may take approximately 1.x - 2 hours to complete.
 
 ## Manual mode
 
-If you want to manually run the scriptss, it may take 2 hours to complete. Here is the steps:
-
+If you want to manually run the scripts, here are the steps:
 
 ### System requirements
-+ System
 
-```bash 
++ System (for Ubuntu/Debian-based distributions)
 
-sudo apt-get install -y google-chrome-stable chromium-browser
-
+```bash
+sudo apt-get install -y google-chrome-stable
 ```
 
 + Python modules
 
-```bash 
-
+```bash
 python -m pip install --upgrade pip
 pip install pyglossary bs4 webdriver-manager selenium lxml
-
 ```
 
-### Steps do do
+### Steps to run
 
-Please see the [yml file](./.github/workflows/dpd_tipitakapaliorg.yml)
-
-
-
-
+The entire process is defined in the [.github/workflows/dpd_tipitakapaliorg.yml](./.github/workflows/dpd_tipitakapaliorg.yml) file.
