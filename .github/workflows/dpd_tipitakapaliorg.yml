@@ -72,10 +72,10 @@ jobs:
         run: |
           zip dpd-databases.zip *.db dpd_table_log.txt dpd_deconstructor_log.txt
 
-      - name: Zip SQLite database
-        run: |
-          echo "hello" > a.txt
-          zip dpd-databases.zip a.txt
+      # - name: Zip SQLite database
+      #   run: |
+      #     echo "hello" > a.txt
+      #     zip dpd-databases.zip a.txt
       
       # - name: Upload artifacts
       #   uses: actions/upload-artifact@v4
