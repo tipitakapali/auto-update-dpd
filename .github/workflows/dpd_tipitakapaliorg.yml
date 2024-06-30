@@ -105,4 +105,4 @@ jobs:
         run: |
           curl -X POST https://api.tipitakapali.org/api/auto-update-db \
           -H "Content-Type: application/json" \
-          -d '{"version": "${{ env.VERSION }}", "releaseUrl": "https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/dpd-databases.zip"}'
+          -d '{"token": "${{ secrets.UPDATE_KEY }}", "version": "${{ env.VERSION }}", "releaseUrl": "https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/dpd-databases.zip"}'
