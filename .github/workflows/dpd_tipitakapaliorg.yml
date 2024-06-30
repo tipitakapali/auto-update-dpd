@@ -70,7 +70,7 @@ jobs:
 
       - name: Zip SQLite database
         run: |
-          zip dpd-databases.zip *.db dpd_table_log.txt dpd_deconstructor_log.txt
+          zip dpd-databases.zip ./*.db ./*.txt
 
       # - name: Zip SQLite database
       #   run: |
