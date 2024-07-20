@@ -13,6 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+
+      - name: Print working directory and contents
+        run: |
+          pwd
+          ls -lha
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          ls -lha $GITHUB_WORKSPACE
+
       - name: It may take hours to complete
         run: echo "It may take hours to complete, perhaps will ask dpd for full Goldendict build"
 
@@ -32,13 +40,14 @@ jobs:
       - name: Download & extract dpd-goldendict.zip
         run: |
           wget -q -O dpd-goldendict.zip https://github.com/digitalpalidictionary/digitalpalidictionary/releases/latest/download/dpd-goldendict.zip
-          unzip dpd-goldendict.zip -d tabfile
+          unzip dpd-goldendict.zip -d $GITHUB_WORKSPACE/tabfile
+          ls -lha $GITHUB_WORKSPACE/tabfile
 
       - name: Convert to Tabfile
         run: |
           export USER=${USER:-root}
-          pyglossary tabfile/dpd/dpd.ifo tabfile/dpd/dpd.txt --read-format=Stardict --write-format=Tabfile
-          pyglossary tabfile/dpd-deconstructor/dpd-deconstructor.ifo tabfile/dpd-deconstructor/dpd-deconstructor.txt --read-format=Stardict --write-format=Tabfile
+          pyglossary $GITHUB_WORKSPACE/tabfile/dpd/dpd.ifo $GITHUB_WORKSPACE/tabfile/dpd/dpd.txt --read-format=Stardict --write-format=Tabfile
+          pyglossary $GITHUB_WORKSPACE/tabfile/dpd-deconstructor/dpd-deconstructor.ifo $GITHUB_WORKSPACE/tabfile/dpd-deconstructor/dpd-deconstructor.txt --read-format=Stardict --write-format=Tabfile
 
       # - name: Convert to Tabfile
       #   run: |
@@ -47,7 +56,7 @@ jobs:
 
       - name: List tabfile directory contents
         run: |
-          ls -lh ${{ github.workspace }}/tabfile
+          ls -lh $GITHUB_WORKSPACE/tabfile
 
       - name: Start Python HTTP Server
         run: |
