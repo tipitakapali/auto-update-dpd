@@ -145,8 +145,9 @@ def main(batch_size=1002):
 
             word_counter += 1
             main_defi = replace_defi(main_defi, word_counter)
+            
             if word_counter > 1000:
-                break
+               break
 
             if word_counter % 10000 == 0:
                 print(i, word_counter, word_lead)
