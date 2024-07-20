@@ -9,6 +9,15 @@ from min_defi import min_defi
 from selenium_chrome import fill_dpd_str, create_driver, quit_driver
 # from selenium_chromium import fill_dpd_str, create_driver, quit_driver
 
+### important
+
+from feedback import tipitakapaliversion, tipitakapalidpdfeedback
+
+
+
+
+
+
 __version__ = "20240622"
 __version_dpd__ = "20240621"
 
@@ -16,6 +25,8 @@ __version_dpd__ = "20240621"
 PALI_ROMAN_CHARS = r"[ĀĪŪṀṂṆḌṬḶṚṢŚÑṄāīūṁṃṇḍṭḷṛṣśñṅA-Za-z]"
 NOT_PALI_ROMAN_CHARS = r"[^ĀĪŪṀṂṆḌṬḶṚṢŚÑṄāīūṁṃṇḍṭḷṛṣśñṅA-Za-z]"
 STRIP_NOT_RCHARS_END = r"[^ĀĪŪṀṂṆḌṬḶṚṢŚÑṄāīūṁṃṇḍṭḷṛṣśñṅA-Za-z]+$"
+
+
 
 
 def main(batch_size=1002):
@@ -50,6 +61,18 @@ def main(batch_size=1002):
                 word TEXT NOT NULL,
                 defi TEXT NOT NULL);"""
     )
+
+    ## These will be used to show date on the fb button
+    conn_main.execute(
+                    f"""INSERT INTO misc (word, defi)
+                VALUES (?, ?)""",
+                    ("##tipitakapaliversion", tipitakapaliversion),
+                )
+    conn_main.execute(
+                    f"""INSERT INTO misc (word, defi)
+                VALUES (?, ?)""",
+                    ("##tipitakapalidpdfeedback", tipitakapalidpdfeedback),
+                )
 
     conn_main.execute(
         """CREATE TABLE IF NOT EXISTS synonyms
@@ -131,7 +154,7 @@ def main(batch_size=1002):
             main_defi = replace_defi(main_defi, word_counter)
             # if kk > 1000:
             #     break
-            if word_counter % 1000 == 0:
+            if word_counter % 10000 == 0:
                 print(i, word_counter, word_lead)
 
             if "<script>" in main_defi:
@@ -139,7 +162,8 @@ def main(batch_size=1002):
                 main_defi = fill_dpd_str(driver, main_defi)
                 fill_errors += "\n"
                 if not "mailto:digitalpalidictionary@gmail.com" in main_defi:
-                    print("may check error", word_counter, word_lead)
+                    pass
+                    # print("may check error", word_counter, word_lead)
 
             main_defi, decData, conjuData = min_defi(main_defi, word_counter)
 

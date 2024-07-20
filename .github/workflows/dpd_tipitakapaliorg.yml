@@ -1,8 +1,8 @@
 name: Prepare DPD database
 
 on:
-  release:
-    types: [published]
+  # release:
+  #   types: [published]
     # repo: digitalpalidictionary/digitalpalidictionary
   workflow_dispatch:
 
