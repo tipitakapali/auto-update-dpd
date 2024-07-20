@@ -58,10 +58,11 @@ jobs:
         run: |
           ls -lh $GITHUB_WORKSPACE/tabfile
 
+
       - name: Start Python HTTP Server
         run: |
-          python -m http.server 8080 --directory ${{ github.workspace }}/tabfile &
-          echo $! > server_pid.txt
+          python -m http.server 8080 --directory $GITHUB_WORKSPACE/tabfile &
+          echo $! > $GITHUB_WORKSPACE/server_pid.txt
           sleep 5  # Give the server a moment to start
 
       - name: Test Python HTTP Server
@@ -73,7 +74,13 @@ jobs:
           lscpu
           free -h
           df -h
+  
+      - name: Set environment variable DPD
+        run: |
+          echo "DPD_INPUT_FILE=$GITHUB_WORKSPACE/tabfile/dpd/dpd.txt" >> $GITHUB_ENV
+          echo "DEC_INPUT_FILE=$GITHUB_WORKSPACE/tabfile/dpd-deconstructor/dpd-deconstructor.txt" >> $GITHUB_ENV
 
+      # in python file input_tab_file = os.environ.get('DPD_INPUT_FILE', "tabfile/dpd/dpd.txt")
       - name: Generate DPD, declension, conjugation DB
         run: python main_dpd_to_sqlite.py
 
@@ -82,12 +89,12 @@ jobs:
 
       - name: Stop Python HTTP Server
         run: |
-          kill $(cat server_pid.txt)
-          rm server_pid.txt
+          kill $(cat $GITHUB_WORKSPACE/server_pid.txt)
+          rm $GITHUB_WORKSPACE/server_pid.txt
 
       - name: Zip SQLite database
         run: |
-          zip dpd-databases.zip ./*.db ./*.txt
+          zip $GITHUB_WORKSPACE/dpd-databases.zip $GITHUB_WORKSPACE/*.db $GITHUB_WORKSPACE/*.txt
 
       - name: Generate version tag
         id: version

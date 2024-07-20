@@ -26,7 +26,8 @@ STRIP_NOT_RCHARS_END = r"[^ĀĪŪṀṂṆḌṬḶṚṢŚÑṄāīūṁṃṇ�
 def main(batch_size=1002):
     time_log_start = TT()
 
-    input_tab_file = "tabfile/dpd/dpd.txt"
+    input_tab_file = os.environ.get('DPD_INPUT_FILE', "tabfile/dpd/dpd.txt")
+
     wrap_class = "dp9"
 
     # the table name in this log is needed later

@@ -20,7 +20,12 @@ STRIP_NOT_RCHARS_END = r"[^ĀĪŪṀṂṆḌṬḶṚṢŚÑṄāīūṁṃṇ�
 def main(batch_size=1002):
 
     time_log_start = TT()
-    input_tab_file="tabfile/dpd-deconstructor/dpd-deconstructor.txt"
+    # input_tab_file="tabfile/dpd-deconstructor/dpd-deconstructor.txt"
+    input_tab_file = os.environ.get('DEC_INPUT_FILE', "tabfile/dpd-deconstructor/dpd-deconstructor.txt")
+
+
+
+
     wrap_class = "dp8"
 
     # the table name in this log is needed later
