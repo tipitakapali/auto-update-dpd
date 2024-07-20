@@ -31,7 +31,7 @@ jobs:
 
       - name: download & extract dpd-goldendict.zip
         run: |
-          wget -O dpd-goldendict.zip https://github.com/digitalpalidictionary/digitalpalidictionary/releases/latest/download/dpd-goldendict.zip
+          wget -q -O dpd-goldendict.zip https://github.com/digitalpalidictionary/digitalpalidictionary/releases/latest/download/dpd-goldendict.zip
           unzip dpd-goldendict.zip -d tabfile
 
       - name: convert to Tabfile

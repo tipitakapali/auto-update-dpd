@@ -7,26 +7,20 @@ from replace_defi import replace_defi
 from min_defi import min_defi
 
 from selenium_chrome import fill_dpd_str, create_driver, quit_driver
+
 # from selenium_chromium import fill_dpd_str, create_driver, quit_driver
 
-### important
 
 from feedback import tipitakapaliversion, tipitakapalidpdfeedback
 
 
-
-
-
-
-__version__ = "20240622"
-__version_dpd__ = "20240621"
+__version__ = "0.0.3"
+__version_dpd__ = "2024-07-20"
 
 # Constants to remove non-roman words
 PALI_ROMAN_CHARS = r"[ĀĪŪṀṂṆḌṬḶṚṢŚÑṄāīūṁṃṇḍṭḷṛṣśñṅA-Za-z]"
 NOT_PALI_ROMAN_CHARS = r"[^ĀĪŪṀṂṆḌṬḶṚṢŚÑṄāīūṁṃṇḍṭḷṛṣśñṅA-Za-z]"
 STRIP_NOT_RCHARS_END = r"[^ĀĪŪṀṂṆḌṬḶṚṢŚÑṄāīūṁṃṇḍṭḷṛṣśñṅA-Za-z]+$"
-
-
 
 
 def main(batch_size=1002):
@@ -64,15 +58,15 @@ def main(batch_size=1002):
 
     ## These will be used to show date on the fb button
     conn_main.execute(
-                    f"""INSERT INTO misc (word, defi)
+        f"""INSERT INTO misc (word, defi)
                 VALUES (?, ?)""",
-                    ("##tipitakapaliversion", tipitakapaliversion),
-                )
+        ("##tipitakapaliversion", tipitakapaliversion),
+    )
     conn_main.execute(
-                    f"""INSERT INTO misc (word, defi)
+        f"""INSERT INTO misc (word, defi)
                 VALUES (?, ?)""",
-                    ("##tipitakapalidpdfeedback", tipitakapalidpdfeedback),
-                )
+        ("##tipitakapalidpdfeedback", tipitakapalidpdfeedback),
+    )
 
     conn_main.execute(
         """CREATE TABLE IF NOT EXISTS synonyms
@@ -120,7 +114,6 @@ def main(batch_size=1002):
     word_counter = 0
     fill_errors = ""
 
-
     with open(input_tab_file, "r", encoding="utf-8") as f:
         for i, line in enumerate(f, 1):
             words_in_many_script_str, main_defi = line.strip().split("\t", 1)
@@ -152,8 +145,9 @@ def main(batch_size=1002):
 
             word_counter += 1
             main_defi = replace_defi(main_defi, word_counter)
-            # if kk > 1000:
-            #     break
+            if word_counter > 1000:
+                break
+
             if word_counter % 10000 == 0:
                 print(i, word_counter, word_lead)
 
