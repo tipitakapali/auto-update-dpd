@@ -16,10 +16,22 @@ jobs:
       - name: It may take hours to complete
         run: echo "It may take hours to complete, perhaps will ask dpd for full Goldendict build"
 
+      # - name: Install dependencies
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     pip install pyglossary bs4 webdriver-manager selenium lxml
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyglossary bs4 webdriver-manager selenium lxml
+          pip install pyglossary bs4 lxml
+      
+      - name: Print versions
+        run: |
+          python --version
+          pip show selenium
+          google-chrome --version
+          chromedriver --version
 
       - name: Download & extract dpd-goldendict.zip
         run: |
@@ -28,8 +40,14 @@ jobs:
 
       - name: Convert to Tabfile
         run: |
+          export USER=${USER:-root}
           pyglossary tabfile/dpd/dpd.ifo tabfile/dpd/dpd.txt --read-format=Stardict --write-format=Tabfile
           pyglossary tabfile/dpd-deconstructor/dpd-deconstructor.ifo tabfile/dpd-deconstructor/dpd-deconstructor.txt --read-format=Stardict --write-format=Tabfile
+
+      # - name: Convert to Tabfile
+      #   run: |
+      #     pyglossary tabfile/dpd/dpd.ifo tabfile/dpd/dpd.txt --read-format=Stardict --write-format=Tabfile
+      #     pyglossary tabfile/dpd-deconstructor/dpd-deconstructor.ifo tabfile/dpd-deconstructor/dpd-deconstructor.txt --read-format=Stardict --write-format=Tabfile
 
       - name: List tabfile directory contents
         run: |
