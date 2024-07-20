@@ -115,7 +115,8 @@ jobs:
           draft: true
           prerelease: false
           make_latest: true
-          files: $GITHUB_WORKSPACE/dpd-databases.zip
+          # files: $GITHUB_WORKSPACE/dpd-databases.zip
+          files: ${{ github.workspace }}/dpd-databases.zip
 
       - name: Notify API server
         run: |
