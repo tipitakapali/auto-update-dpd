@@ -6,6 +6,7 @@ tabfile/
 # ppython is env
 ppython/
 *_log.txt
+.venv/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,37 +1,28 @@
-# What does it do?
+### Converting dpd-deconstructor to TPO SQLite3
 
-- When there is a new release of the Digital Pali Dictionary (DPD), it will automatically prepare tailored database files for tipitakapali.org. (How to monitor dpd new releases? (please google) then trigger the Action via webhook etc...)
-
-- It will notify the API server to use the newly generated database files via a curl POST (with a secret UPDATE-KEY)
-
-- It uses a very slow "selenium" way to restore the minified dpd-goldendict version. It may take approximately 1.x - 2 hours to complete.
-
-## Manual mode
-
-If you want to manually run the scripts, here are the steps:
-
-### System requirements
-
-+ System (for Ubuntu/Debian-based distributions)
+https://tipitakapali.org uses custom DPD database files:
 
 ```bash
-sudo apt-get install -y google-chrome-stable
+dpd_synonyms_tipitakapali.db
+dpd_inflection_tipitakapali.db
+dpd_tipitakapali.db
+dpd_splitter_tipitakapali.db 
 ```
 
-+ Python modules
-
-While inside the project dir:
+This script converts the `dpd-deconstructor` tabfile into `dpd_splitter_tipitakapali.db`. The other database files are generated using this [tpo exporter](https://github.com/tipitakapali/dpd-db/tree/main/exporter/tpo)
 
 
-```bash
-python3 -m venv .venv 
+```bash 
+
+python3 -m venv .venv
+
 source .venv/bin/activate
 
-python -m pip install --upgrade pip
+pip3 install pyglossary
 
-pip install pyglossary bs4 webdriver-manager selenium lxml
+# put dpd-deconstructor to tabfile dir (unzip dpd-goldendict.zip from https://github.com/digitalpalidictionary/dpd-db/releases)
+pyglossary tabfile/dpd-deconstructor/dpd-deconstructor.ifo tabfile/dpd-deconstructor/dpd-deconstructor.txt --read-format=Stardict --write-format=Tabfile
+
+python3 dpd_deconstructor_stardict_to_sqlite.py
+
 ```
-
-### Steps to run
-
-The entire process is defined in the [.github/workflows/dpd_tipitakapaliorg.yml](./.github/workflows/dpd_tipitakapaliorg.yml) file.
