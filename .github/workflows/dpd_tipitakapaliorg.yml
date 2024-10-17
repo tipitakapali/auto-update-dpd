@@ -1,125 +1,125 @@
-name: Prepare DPD database
+# name: Prepare DPD database
 
-on:
-  workflow_dispatch:
+# on:
+#   workflow_dispatch:
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    container:
-      image: joyzoursky/python-chromedriver:3.9
-    timeout-minutes: 360  # Increased timeout to 6 hours
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     container:
+#       image: joyzoursky/python-chromedriver:3.9
+#     timeout-minutes: 360  # Increased timeout to 6 hours
 
-    steps:
-      - uses: actions/checkout@v4
+#     steps:
+#       - uses: actions/checkout@v4
 
 
-      - name: Print working directory and contents
-        run: |
-          pwd
-          ls -lha
-          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          ls -lha $GITHUB_WORKSPACE
+#       - name: Print working directory and contents
+#         run: |
+#           pwd
+#           ls -lha
+#           echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+#           ls -lha $GITHUB_WORKSPACE
 
-      - name: It may take hours to complete
-        run: echo "It may take hours to complete, perhaps will ask dpd for full Goldendict build"
-      - name: Install zip utility
-        run: |
-          apt-get update
-          apt-get install -y zip
+#       - name: It may take hours to complete
+#         run: echo "It may take hours to complete, perhaps will ask dpd for full Goldendict build"
+#       - name: Install zip utility
+#         run: |
+#           apt-get update
+#           apt-get install -y zip
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pyglossary bs4 webdriver-manager selenium lxml
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install pyglossary bs4 webdriver-manager selenium lxml
           
 
       
-      - name: Print versions
-        run: |
-          python --version
-          pip show selenium
-          google-chrome --version
-          chromedriver --version
+#       - name: Print versions
+#         run: |
+#           python --version
+#           pip show selenium
+#           google-chrome --version
+#           chromedriver --version
 
-      - name: Download & extract dpd-goldendict.zip
-        run: |
-          wget -q -O dpd-goldendict.zip https://github.com/digitalpalidictionary/digitalpalidictionary/releases/latest/download/dpd-goldendict.zip
-          unzip dpd-goldendict.zip -d $GITHUB_WORKSPACE/tabfile
-          ls -lha $GITHUB_WORKSPACE/tabfile
+#       - name: Download & extract dpd-goldendict.zip
+#         run: |
+#           wget -q -O dpd-goldendict.zip https://github.com/digitalpalidictionary/digitalpalidictionary/releases/latest/download/dpd-goldendict.zip
+#           unzip dpd-goldendict.zip -d $GITHUB_WORKSPACE/tabfile
+#           ls -lha $GITHUB_WORKSPACE/tabfile
 
-      - name: Convert to Tabfile
-        run: |
-          export USER=${USER:-root}
-          pyglossary $GITHUB_WORKSPACE/tabfile/dpd/dpd.ifo $GITHUB_WORKSPACE/tabfile/dpd/dpd.txt --read-format=Stardict --write-format=Tabfile
-          pyglossary $GITHUB_WORKSPACE/tabfile/dpd-deconstructor/dpd-deconstructor.ifo $GITHUB_WORKSPACE/tabfile/dpd-deconstructor/dpd-deconstructor.txt --read-format=Stardict --write-format=Tabfile
+#       - name: Convert to Tabfile
+#         run: |
+#           export USER=${USER:-root}
+#           pyglossary $GITHUB_WORKSPACE/tabfile/dpd/dpd.ifo $GITHUB_WORKSPACE/tabfile/dpd/dpd.txt --read-format=Stardict --write-format=Tabfile
+#           pyglossary $GITHUB_WORKSPACE/tabfile/dpd-deconstructor/dpd-deconstructor.ifo $GITHUB_WORKSPACE/tabfile/dpd-deconstructor/dpd-deconstructor.txt --read-format=Stardict --write-format=Tabfile
 
-      # - name: Convert to Tabfile
-      #   run: |
-      #     pyglossary tabfile/dpd/dpd.ifo tabfile/dpd/dpd.txt --read-format=Stardict --write-format=Tabfile
-      #     pyglossary tabfile/dpd-deconstructor/dpd-deconstructor.ifo tabfile/dpd-deconstructor/dpd-deconstructor.txt --read-format=Stardict --write-format=Tabfile
+#       # - name: Convert to Tabfile
+#       #   run: |
+#       #     pyglossary tabfile/dpd/dpd.ifo tabfile/dpd/dpd.txt --read-format=Stardict --write-format=Tabfile
+#       #     pyglossary tabfile/dpd-deconstructor/dpd-deconstructor.ifo tabfile/dpd-deconstructor/dpd-deconstructor.txt --read-format=Stardict --write-format=Tabfile
 
-      - name: List tabfile directory contents
-        run: |
-          ls -lh $GITHUB_WORKSPACE/tabfile
+#       - name: List tabfile directory contents
+#         run: |
+#           ls -lh $GITHUB_WORKSPACE/tabfile
 
 
-      - name: Start Python HTTP Server
-        run: |
-          python -m http.server 8080 --directory $GITHUB_WORKSPACE/tabfile &
-          echo $! > $GITHUB_WORKSPACE/server_pid.txt
-          sleep 5  # Give the server a moment to start
+#       - name: Start Python HTTP Server
+#         run: |
+#           python -m http.server 8080 --directory $GITHUB_WORKSPACE/tabfile &
+#           echo $! > $GITHUB_WORKSPACE/server_pid.txt
+#           sleep 5  # Give the server a moment to start
 
-      - name: Test Python HTTP Server
-        run: |
-          curl http://127.0.0.1:8080/dpd/res/main.js
+#       - name: Test Python HTTP Server
+#         run: |
+#           curl http://127.0.0.1:8080/dpd/res/main.js
 
-      - name: Print System Info
-        run: |
-          lscpu
-          free -h
-          df -h
+#       - name: Print System Info
+#         run: |
+#           lscpu
+#           free -h
+#           df -h
   
-      - name: Set environment variable DPD
-        run: |
-          echo "DPD_INPUT_FILE=$GITHUB_WORKSPACE/tabfile/dpd/dpd.txt" >> $GITHUB_ENV
-          echo "DEC_INPUT_FILE=$GITHUB_WORKSPACE/tabfile/dpd-deconstructor/dpd-deconstructor.txt" >> $GITHUB_ENV
+#       - name: Set environment variable DPD
+#         run: |
+#           echo "DPD_INPUT_FILE=$GITHUB_WORKSPACE/tabfile/dpd/dpd.txt" >> $GITHUB_ENV
+#           echo "DEC_INPUT_FILE=$GITHUB_WORKSPACE/tabfile/dpd-deconstructor/dpd-deconstructor.txt" >> $GITHUB_ENV
 
-      # in python file input_tab_file = os.environ.get('DPD_INPUT_FILE', "tabfile/dpd/dpd.txt")
-      - name: Generate DPD, declension, conjugation DB
-        run: python main_dpd_to_sqlite.py
+#       # in python file input_tab_file = os.environ.get('DPD_INPUT_FILE', "tabfile/dpd/dpd.txt")
+#       - name: Generate DPD, declension, conjugation DB
+#         run: python main_dpd_to_sqlite.py
 
-      - name: Generate DPD deconstructor DB
-        run: python dpd_deconstructor_to_sqlite.py
+#       - name: Generate DPD deconstructor DB
+#         run: python dpd_deconstructor_to_sqlite.py
 
-      - name: Stop Python HTTP Server
-        run: |
-          kill $(cat $GITHUB_WORKSPACE/server_pid.txt)
-          rm $GITHUB_WORKSPACE/server_pid.txt
+#       - name: Stop Python HTTP Server
+#         run: |
+#           kill $(cat $GITHUB_WORKSPACE/server_pid.txt)
+#           rm $GITHUB_WORKSPACE/server_pid.txt
 
-      - name: Zip SQLite database
-        run: |
-          zip $GITHUB_WORKSPACE/dpd-databases.zip $GITHUB_WORKSPACE/*.db $GITHUB_WORKSPACE/*.txt
+#       - name: Zip SQLite database
+#         run: |
+#           zip $GITHUB_WORKSPACE/dpd-databases.zip $GITHUB_WORKSPACE/*.db $GITHUB_WORKSPACE/*.txt
 
-      - name: Generate version tag
-        id: version
-        run: |
-          echo "VERSION=v$(date +'%y.%-m.%-d')" >> "$GITHUB_ENV"
-          echo "use tag name: v$(date +'%y.%-m.%-d')"
+#       - name: Generate version tag
+#         id: version
+#         run: |
+#           echo "VERSION=v$(date +'%y.%-m.%-d')" >> "$GITHUB_ENV"
+#           echo "use tag name: v$(date +'%y.%-m.%-d')"
 
-      - name: Create Github release
-        uses: softprops/action-gh-release@v2
-        with:
-          name: auto build dpd ${{ env.VERSION }}
-          tag_name: ${{ env.VERSION }}
-          draft: true
-          prerelease: false
-          make_latest: true
-          # files: $GITHUB_WORKSPACE/dpd-databases.zip
-          files: ${{ github.workspace }}/dpd-databases.zip
+#       - name: Create Github release
+#         uses: softprops/action-gh-release@v2
+#         with:
+#           name: auto build dpd ${{ env.VERSION }}
+#           tag_name: ${{ env.VERSION }}
+#           draft: true
+#           prerelease: false
+#           make_latest: true
+#           # files: $GITHUB_WORKSPACE/dpd-databases.zip
+#           files: ${{ github.workspace }}/dpd-databases.zip
 
-      - name: Notify API server
-        run: |
-          curl -X POST https://api.tipitakapali.org/api/auto-update-db \
-          -H "Content-Type: application/json" \
-          -d '{"token": "${{ secrets.UPDATE_KEY }}", "version": "${{ env.VERSION }}", "releaseUrl": "https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/dpd-databases.zip"}'
+#       - name: Notify API server
+#         run: |
+#           curl -X POST https://api.tipitakapali.org/api/auto-update-db \
+#           -H "Content-Type: application/json" \
+#           -d '{"token": "${{ secrets.UPDATE_KEY }}", "version": "${{ env.VERSION }}", "releaseUrl": "https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/dpd-databases.zip"}'

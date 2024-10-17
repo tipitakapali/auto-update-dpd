@@ -7,6 +7,7 @@ tabfile/
 ppython/
 *_log.txt
 .venv/
+manual_db_release/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
