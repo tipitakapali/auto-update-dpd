@@ -3,7 +3,7 @@ import re
 import sqlite3
 import time
 from time import time as TT
-from replace_defi import replace_defi
+from cleanup_definitions import replace_defi
 from min_defi import min_defi
 
 from selenium_chrome import fill_dpd_str, create_driver, quit_driver
