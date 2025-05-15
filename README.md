@@ -4,7 +4,7 @@
 
 python3 -m venv .venv
 source .venv/bin/activate
-pip3 install pyglossary bs4
+pip3 install pyglossary bs4 minify_html
 
 # put dpd-deconstructor to tabfile dir (unzip dpd-goldendict.zip from https://github.com/digitalpalidictionary/dpd-db/releases)
 

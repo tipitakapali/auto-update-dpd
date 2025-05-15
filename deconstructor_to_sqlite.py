@@ -8,6 +8,7 @@ import os
 import re
 import sqlite3
 from time import time as TT
+import zipfile
 from cleanup_definitions import cleanup
 
 
@@ -26,7 +27,7 @@ def main(batch_size=10002):
         "DEC_INPUT_FILE", "tabfile/dpd-deconstructor/dpd-deconstructor.txt"
     )
 
-    wrap_class = "dp8"
+    wrap_class = "dp9"
 
     # the table name in this log is needed later
     table_log_file = f"dpd_deconstructor_log.txt"
@@ -220,10 +221,18 @@ def main(batch_size=10002):
 
     print("\n[V] Done all! Sādhu x3.14")
     print("Took:", TT() - time_log_start, "second(s).")
-    # quit_driver(driver)
+
+    # Zip inflection DB
+    zip_db(dpd_splitter_tipitakapali)
 
 
-## kappiyas
+def zip_db(db_name: str):
+    with zipfile.ZipFile(f"{db_name}.zip", "w") as zipf:
+        zipf.write(db_name, os.path.basename(db_name))
+    print(f"Zipped {db_name} into {db_name}.zip")
+
+
+## helpers
 def delete_existing_databases(*databases):
     for db in databases:
         if os.path.exists(db):
