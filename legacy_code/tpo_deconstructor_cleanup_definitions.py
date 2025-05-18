@@ -2,31 +2,11 @@ from bs4 import BeautifulSoup
 import minify_html  # type: ignore
 
 minified_links = [
-    [
-        "https://docs.google.com/forms/d/1iMD9sCSWFfJAFCFYuG9HRIyrr9KFRy0nAOVApM998wM/viewform",
-        "L#1@",
-    ],
-    [
-        "https://docs.google.com/forms/d/e/1FAIpQLScNC5v2gQbBCM3giXfYIib9zrp-WMzwJuf_iVXEMX2re4BFFw/viewform",
-        "L#2@",
-    ],
-    [
-        "https://docs.google.com/forms/d/e/1FAIpQLSdAL2PzavyrtXgGmtNrZAMyh3hV6g3fU0chxhWFxunQEZtH0g/viewform",
-        "L#3@",
-    ],
-    [
-        "https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform",
-        "L#4@",
-    ],
-    [
-        "https://docs.google.com/forms/d/e/1FAIpQLSfKUBx-icfRCWmhHqUwzX60BVQE21s_NERNfU2VvbjEfE371A/viewform",
-        "L#5@",
-    ],
-    [
-        "https://docs.google.com/forms/d/e/1FAIpQLSfResxEUiRCyFITWPkzoQ2HhHEvUS5fyg68Rl28hFH6vhHlaA/viewform",
-        "L#6@",
-    ],
-    ["GoldenDict", "Tipitakapali.org"],
+  ["https://docs.google.com/forms/d/e/1FAIpQLSdAL2PzavyrtXgGmtNrZAMyh3hV6g3fU0chxhWFxunQEZtH0g/viewform", "L#1@"],
+  ["https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform", "L#2@"],
+  ["https://docs.google.com/forms/d/e/1FAIpQLSfKUBx-icfRCWmhHqUwzX60BVQE21s_NERNfU2VvbjEfE371A/viewform", "L#3@"],
+  ["https://docs.google.com/forms/d/e/1FAIpQLSfResxEUiRCyFITWPkzoQ2HhHEvUS5fyg68Rl28hFH6vhHlaA/viewform", "L#4@"],
+  ["GoldenDict", "Tipitakapali.org"],
 ]
 
 
@@ -44,7 +24,7 @@ def cleanup(html_content, counter):
 
     # change div class from dpd -> deconstructor
     for div in soup.find_all("div", class_="dpd"):
-        div["class"] = "deconstructor"
+        div["class"] = "dpd deconstructor"
 
     # Remove title attributes from all elements
     for element in soup.find_all(True):  # Find all tags
@@ -64,7 +44,7 @@ def cleanup(html_content, counter):
         # Replace footer with minified version
         if deconstructor_link:
             # new class is dfooter
-            new_footer = soup.new_tag("p", attrs={"class": "dfooter"})
+            new_footer = soup.new_tag("p", attrs={"class": "footer"})
             new_footer.string = "These word breakups are code-generated. "
             new_link = soup.new_tag(
                 "a",
@@ -79,8 +59,8 @@ def cleanup(html_content, counter):
     defi = str(soup)
 
     # Replace links
-    for a, b in minified_links:
-        defi = defi.replace(a, b)
+    for olds, news in minified_links:
+        defi = defi.replace(olds, news)
 
     defi = minify_html.minify(defi)
 

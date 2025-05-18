@@ -5,7 +5,7 @@ import time
 from time import time as TT
 
 
-from cleanup_definitions import replace_defi
+from tpo_deconstructor_cleanup_definitions import replace_defi
 from min_defi import min_defi
 
 # from selenium_chrome import fill_dpd_str, create_driver, quit_driver

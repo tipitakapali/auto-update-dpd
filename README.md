@@ -1,45 +1,71 @@
-## 1. Set up
+## Generate DPD SQLite3 Files for Tipitakapali.org
 
-```bash 
+* All export-related code files have been moved to the `tpo-db` directory.
 
-python3 -m venv .venv
-source .venv/bin/activate
-pip3 install pyglossary bs4 minify_html
+---
 
-# put dpd-deconstructor to tabfile dir (unzip dpd-goldendict.zip from https://github.com/digitalpalidictionary/dpd-db/releases)
+## Release Notes
 
-python3 main.py
+* The apps check for new versions using live release tags, such as `v25.5.18`.
+  ➤ **Remember to create a new release tag** using the current date in this format: `vYY.M.DD`.
 
-```
+* The apps extract and copy all files in the zip files, so we should only include the changed files.
 
-## 2. Run
+---
 
-```bash
+## 1. For Computers
 
-python3 main.py
+### `dpd-databases.zip`
 
-```
-
-## 3. Notes
-
-https://tipitakapali.org uses custom DPD these database files:
-
-```bash
-dpd_synonyms_tipitakapali.db
-dpd_inflection_tipitakapali.db
-dpd_tipitakapali.db
-dpd_splitter_tipitakapali.db 
-```
-
-This script converts the `dpd-deconstructor` tabfile into `dpd_splitter_tipitakapali.db`. 
-
-The other database files are generated using this [tpo exporter](https://github.com/tipitakapali/dpd-db/tree/main/exporter/tpo)
-
-
-- pyglossary command:
-
-```bash 
-
-pyglossary tabfile/dpd-deconstructor/dpd-deconstructor.ifo tabfile/dpd-deconstructor/dpd-deconstructor.txt --read-format=Stardict --write-format=Tabfile
+This archive should include **all `.db` and `.js` files** from the local `db_tpo` folder:
 
 ```
+dpd-databases.zip
+├── abhidhan_tipitakapali.db
+├── ptsped2015ed_tipitakapali.db
+├── fts_tipitaka.db
+├── ap_bh_mw_sanskrit.db
+
+├── dpd_goldendict.js
+├── dpd_inflection_tipitakapali.db
+├── dpd_splitter_tipitakapali.db
+├── dpd_synonyms_tipitakapali.db
+├── dpd_tipitakapali.db
+
+├── index.html
+├── license_en.txt
+└── README.md
+```
+
+---
+
+## 2. For Flutter Mobile App
+
+### `mobile_databases.zip`
+
+This archive should include **all `.db` and `.json` files** (but **not** other `.zip` files) from the Flutter assets folder.
+
+```
+mobile_databases.zip
+├── abhidhan_tipitakapali.db
+├── ptsped2015ed_tipitakapali.db
+├── fts_tipitaka.db
+├── ap_bh_mw_sanskrit.db
+
+├── db_version.json
+├── dpd_inflection_tipitakapali.db
+├── dpd_splitter_tipitakapali.db
+├── dpd_synonyms_tipitakapali.db
+├── dpd_tipitakapali.db
+
+├── family_compound_json.json
+├── family_idiom_json.json
+├── family_root_json.json
+├── family_set_json.json
+├── family_word_json.json
+
+├── license_en.txt
+└── README.md
+```
+
+

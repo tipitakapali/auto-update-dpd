@@ -9,7 +9,7 @@ import re
 import sqlite3
 from time import time as TT
 import zipfile
-from cleanup_definitions import cleanup
+from tpo_deconstructor_cleanup_definitions import cleanup
 
 
 __version__ = "20250415"

@@ -1,6 +1,6 @@
 # main.py
 import subprocess
-from deconstructor_to_sqlite import main
+from tpo_deconstructor_to_sqlite import main
 import os
 
 
@@ -37,3 +37,4 @@ def run_pyglossary():
 if __name__ == "__main__":
     run_pyglossary()
     main()
+    print("Remember to update cleanup_definitions.py")
